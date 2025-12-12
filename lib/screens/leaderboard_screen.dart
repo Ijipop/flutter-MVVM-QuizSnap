@@ -477,7 +477,7 @@ class _CategoryStatsTab extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );
