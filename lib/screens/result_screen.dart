@@ -7,8 +7,15 @@ import '../utils/helpers.dart';
 import 'home_screen.dart';
 
 // Écran de résultats
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key});
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  bool _hasSavedResult = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +31,19 @@ class ResultScreen extends StatelessWidget {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          }
+
+          // Sauvegarder automatiquement le résultat dès qu'il est disponible
+          if (!_hasSavedResult) {
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              final userProvider = context.read<UserProvider>();
+              await userProvider.updateScore(result);
+              if (mounted) {
+                setState(() {
+                  _hasSavedResult = true;
+                });
+              }
+            });
           }
 
           final percentage = result.percentage;
@@ -116,9 +136,11 @@ class ResultScreen extends StatelessWidget {
                 // Boutons d'action
                 ElevatedButton(
                   onPressed: () async {
-                    // Sauvegarder le résultat
-                    final userProvider = context.read<UserProvider>();
-                    await userProvider.updateScore(result);
+                    // S'assurer que le résultat est sauvegardé (au cas où la sauvegarde automatique n'a pas fonctionné)
+                    if (!_hasSavedResult) {
+                      final userProvider = context.read<UserProvider>();
+                      await userProvider.updateScore(result);
+                    }
 
                     // Retourner à l'accueil
                     Navigator.pushAndRemoveUntil(

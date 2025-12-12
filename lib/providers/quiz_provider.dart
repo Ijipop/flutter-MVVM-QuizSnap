@@ -2,12 +2,11 @@ import 'package:flutter/foundation.dart';
 import '../models/question.dart';
 import '../models/quiz_result.dart';
 import '../models/category.dart' as models;
-import '../services/api_service.dart';
+import '../services/local_data_service.dart';
 import '../services/quiz_service.dart';
 
 // Provider pour gérer l'état du quiz
 class QuizProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
   final QuizService _quizService = QuizService();
 
   List<Question> _questions = [];
@@ -34,35 +33,63 @@ class QuizProvider with ChangeNotifier {
           : null;
   bool get isQuizComplete => _currentQuestionIndex >= _questions.length;
 
-  // Charger les questions
+  // Charger les questions depuis les JSON locaux
   Future<void> loadQuestions({
     int amount = 10,
     int? category,
     String? difficulty,
     String? language,
   }) async {
-    // Toujours utiliser le français par défaut
-    language = language ?? 'fr';
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _questions = await _apiService.getQuestions(
-        amount: amount,
-        category: category,
+      // Convertir category ID en string si nécessaire
+      String? categoryString;
+      if (category != null) {
+        // Mapper l'ID numérique vers le string de catégorie JSON (clé parente)
+        categoryString = _mapCategoryIdToString(category);
+        debugPrint('📋 Catégorie ID $category -> "$categoryString"');
+      }
+
+      // Charger depuis LocalDataService
+      final questionModels = await LocalDataService.getRandomQuestions(
+        count: amount,
+        category: categoryString,
         difficulty: difficulty,
-        language: language,
       );
+
+      // Convertir QuestionModel vers Question pour compatibilité
+      _questions = questionModels.map((qm) => Question(
+        id: qm.id,
+        question: qm.question,
+        answers: qm.options,
+        correctAnswer: qm.correctAnswer,
+        category: qm.category,
+        difficulty: qm.difficulty,
+      )).toList();
+
       _currentQuestionIndex = 0;
       _userAnswers = {};
       _result = null;
+
+      if (_questions.isEmpty) {
+        _error = 'Aucune question disponible pour cette catégorie';
+      }
     } catch (e) {
       _error = e.toString();
+      debugPrint('❌ Erreur lors du chargement des questions: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  // Mapper l'ID numérique vers le string de catégorie JSON
+  String? _mapCategoryIdToString(int? categoryId) {
+    if (categoryId == null) return null;
+    return _categoryIdMapping[categoryId];
   }
 
   // Répondre à une question
@@ -97,21 +124,53 @@ class QuizProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Charger les catégories depuis l'API
+  // Charger les catégories depuis les JSON locaux (générées dynamiquement depuis Quiz_Json)
   Future<void> loadCategories() async {
     _isLoadingCategories = true;
     _error = null;
     notifyListeners();
 
     try {
-      _categories = await _apiService.getCategories();
+      final categoriesData = await LocalDataService.loadCategories();
+      
+      // Convertir les données JSON vers le modèle Category
+      // Les IDs JSON sont des strings (thèmes normalisés), on les convertit en hash pour avoir des IDs numériques
+      _categories = categoriesData.map((json) {
+        final idString = json['id']?.toString() ?? '';
+        // Convertir le string ID en hash numérique pour compatibilité
+        final numericId = idString.hashCode.abs();
+        
+        return models.Category(
+          id: numericId,
+          name: json['name'] ?? '',
+        );
+      }).toList();
+
+      // Stocker le mapping ID numérique -> ID string JSON (clé de catégorie parente)
+      _categoryIdMapping = {};
+      for (final json in categoriesData) {
+        final idString = json['id']?.toString() ?? ''; // Clé parente (ex: "cinema", "musique")
+        final numericId = idString.hashCode.abs();
+        _categoryIdMapping[numericId] = idString;
+      }
+
+      debugPrint('✅ ${_categories.length} catégories parentes chargées');
+      debugPrint('   Mapping: $_categoryIdMapping');
+
+      if (_categories.isEmpty) {
+        _error = 'Aucune catégorie disponible';
+      }
     } catch (e) {
       _error = e.toString();
+      debugPrint('❌ Erreur lors du chargement des catégories: $e');
     } finally {
       _isLoadingCategories = false;
       notifyListeners();
     }
   }
+
+  // Mapping pour convertir ID numérique vers ID string JSON
+  Map<int, String> _categoryIdMapping = {};
 
   // Réinitialiser le quiz
   void resetQuiz() {

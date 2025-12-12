@@ -105,8 +105,11 @@ class _HomeContentScreenState extends State<HomeContentScreen> with WidgetsBindi
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     // Charger les données utilisateur au démarrage
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<UserProvider>().loadUserData();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final userProvider = context.read<UserProvider>();
+      // Attendre un peu pour s'assurer que le provider est initialisé
+      await Future.delayed(const Duration(milliseconds: 100));
+      await userProvider.loadUserData();
     });
   }
 

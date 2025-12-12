@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
 import '../utils/constants.dart';
-import 'quiz_screen.dart';
+import 'game_mode_selection_screen.dart';
 import '../widgets/category_card.dart';
 
 // Écran de sélection de catégorie
@@ -26,91 +26,17 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   }
 
   void _startQuiz(int categoryId, String categoryName) {
-    if (_selectedDifficulty == null) {
-      // Afficher un message si aucune difficulté n'est sélectionnée
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Veuillez sélectionner une difficulté'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
-      return;
-    }
-
-    // Charger les questions et naviguer vers le quiz
-    final quizProvider = context.read<QuizProvider>();
-    
-    // Afficher un loader
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-        child: Card(
-          child: Padding(
-            padding: EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Chargement des questions...'),
-              ],
-            ),
-          ),
+    // Rediriger vers la sélection du mode de jeu avec la difficulté sélectionnée
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GameModeSelectionScreen(
+          categoryName: categoryName,
+          categoryId: categoryId,
+          selectedDifficulty: _selectedDifficulty,
         ),
       ),
     );
-
-    quizProvider.loadQuestions(
-      amount: AppConstants.defaultQuestionCount,
-      category: categoryId,
-      difficulty: _selectedDifficulty,
-      language: 'fr', // Français
-    ).then((_) {
-      // Fermer le loader
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-
-      // Vérifier si les questions ont été chargées avec succès
-      if (quizProvider.error == null && quizProvider.questions.isNotEmpty) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => QuizScreen(categoryName: categoryName),
-          ),
-        );
-      } else {
-        // Afficher une erreur
-        final errorMessage = quizProvider.error ?? 'Aucune question disponible';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erreur: $errorMessage'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            duration: const Duration(seconds: 4),
-            action: SnackBarAction(
-              label: 'Réessayer',
-              onPressed: () {
-                _startQuiz(categoryId, categoryName);
-              },
-            ),
-          ),
-        );
-      }
-    }).catchError((error) {
-      // Fermer le loader en cas d'erreur
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erreur: ${error.toString()}'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-          duration: const Duration(seconds: 4),
-        ),
-      );
-    });
   }
 
   @override

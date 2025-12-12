@@ -38,11 +38,17 @@ dependencies:
   # State management
   provider: ^6.1.1
   
-  # HTTP requests
-  http: ^1.2.0
-  
   # Local storage
   shared_preferences: ^2.2.2
+  
+  # Timer for quiz
+  flutter_countdown_timer: ^4.1.0
+  
+  # Charts for statistics
+  fl_chart: ^0.66.0
+  
+  # Celebrations
+  confetti: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -67,9 +73,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - data/Quiz_Json/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
