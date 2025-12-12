@@ -14,14 +14,17 @@ class UserProvider with ChangeNotifier {
 
   // Constructeur qui charge automatiquement les données au démarrage
   UserProvider() {
+    // Lancer l'initialisation en arrière-plan
     _initialize();
   }
 
   // Initialiser et charger les données
   Future<void> _initialize() async {
     if (!_isInitialized) {
+      debugPrint('🔄 UserProvider: Initialisation en cours...');
       await loadUserData();
       _isInitialized = true;
+      debugPrint('✅ UserProvider: Initialisation terminée');
     }
   }
 
@@ -36,10 +39,23 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     try {
+      debugPrint('📥 UserProvider: Chargement des données...');
+      
+      // Déboguer le stockage avant de charger
+      await _storageService.debugStorage();
+      
       _userScore = await _storageService.getUserScore();
       _quizHistory = await _storageService.getQuizHistory();
+      
+      debugPrint('📊 UserProvider: Données chargées - Quiz: ${_userScore?.totalQuizzes ?? 0}, Historique: ${_quizHistory.length}');
+      
+      if (_userScore != null) {
+        debugPrint('✅ UserProvider: Score trouvé - Total: ${_userScore!.totalQuizzes} quiz, ${_userScore!.totalCorrectAnswers}/${_userScore!.totalQuestions} réponses');
+      } else {
+        debugPrint('ℹ️ UserProvider: Aucun score sauvegardé');
+      }
     } catch (e) {
-      debugPrint('Error loading user data: $e');
+      debugPrint('❌ UserProvider: Erreur lors du chargement: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -49,8 +65,12 @@ class UserProvider with ChangeNotifier {
   // Mettre à jour le score après un quiz
   Future<void> updateScore(QuizResult result) async {
     try {
+      debugPrint('💾 UserProvider: Sauvegarde du résultat du quiz...');
+      debugPrint('   Catégorie: ${result.category}, Score: ${result.correctAnswers}/${result.totalQuestions}');
+      
       // Sauvegarder le résultat immédiatement
       await _storageService.saveQuizResult(result);
+      debugPrint('✅ UserProvider: Résultat sauvegardé');
 
       // Mettre à jour le score total
       final currentTotalQuizzes = _userScore?.totalQuizzes ?? 0;
@@ -68,13 +88,29 @@ class UserProvider with ChangeNotifier {
         },
       );
 
+      debugPrint('💾 UserProvider: Sauvegarde du score total...');
+      debugPrint('   Nouveau total: ${_userScore!.totalQuizzes} quiz, ${_userScore!.totalCorrectAnswers}/${_userScore!.totalQuestions} réponses');
+      
       // Sauvegarder le score mis à jour immédiatement
       await _storageService.saveUserScore(_userScore!);
+      debugPrint('✅ UserProvider: Score total sauvegardé');
+      
+      // Vérifier que la sauvegarde a bien fonctionné
+      final verification = await _storageService.getUserScore();
+      if (verification != null) {
+        debugPrint('✅ UserProvider: Vérification - Score sauvegardé: ${verification.totalQuizzes} quiz');
+      } else {
+        debugPrint('⚠️ UserProvider: Vérification - Score non trouvé après sauvegarde!');
+      }
+      
+      // Notifier les listeners pour mettre à jour l'UI
+      notifyListeners();
       
       // Recharger pour avoir l'historique à jour
       await loadUserData();
+      debugPrint('✅ UserProvider: Données rechargées après mise à jour');
     } catch (e) {
-      debugPrint('Error updating score: $e');
+      debugPrint('❌ UserProvider: Erreur lors de la mise à jour du score: $e');
       // En cas d'erreur, recharger quand même les données
       await loadUserData();
     }

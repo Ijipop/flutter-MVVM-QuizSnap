@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
+import '../models/quiz_session_model.dart';
 import '../widgets/question_card.dart';
 import '../widgets/answer_button.dart';
 import '../utils/theme.dart';
@@ -9,10 +10,14 @@ import 'result_screen.dart';
 // Écran principal du quiz
 class QuizScreen extends StatefulWidget {
   final String categoryName;
+  final GameMode? gameMode;
+  final int? timePerQuestion;
   
   const QuizScreen({
     super.key,
     required this.categoryName,
+    this.gameMode,
+    this.timePerQuestion,
   });
 
   @override

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "culture_generale",
+    "name": "Culture Générale",
+    "description": "Testez vos connaissances générales",
+    "icon": "book",
+    "color": "#4CAF50",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "sciences",
+    "name": "Sciences",
+    "description": "Physique, chimie, biologie et plus",
+    "icon": "science",
+    "color": "#2196F3",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "histoire",
+    "name": "Histoire",
+    "description": "Découvrez l'histoire du monde",
+    "icon": "history",
+    "color": "#FF9800",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "geographie",
+    "name": "Géographie",
+    "description": "Pays, capitales et lieux célèbres",
+    "icon": "public",
+    "color": "#9C27B0",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "sport",
+    "name": "Sport",
+    "description": "Tous les sports et leurs champions",
+    "icon": "sports_soccer",
+    "color": "#F44336",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "cinema",
+    "name": "Cinéma",
+    "description": "Films, acteurs et réalisateurs",
+    "icon": "movie",
+    "color": "#E91E63",
+    "unlocked": true,
+    "level": 1
+  },
+  {
+    "id": "technologie",
+    "name": "Technologie",
+    "description": "Informatique, gadgets et innovations",
+    "icon": "computer",
+    "color": "#00BCD4",
+    "unlocked": true,
+    "level": 1
+  }
+]
+

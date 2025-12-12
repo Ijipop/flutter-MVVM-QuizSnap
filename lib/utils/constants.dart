@@ -19,10 +19,13 @@ class AppConstants {
   static const int defaultTimePerQuestion = 30; // secondes
   static const String defaultLanguage = 'fr'; // Français par défaut
   
-  // Difficultés
+  // Difficultés supportées
+  // - 'easy' → Facile
+  // - 'medium' → Moyen  
+  // - 'hard' → Difficile
   static const List<String> difficulties = ['easy', 'medium', 'hard'];
   
-  // Traductions des difficultés
+  // Traductions des difficultés pour l'affichage en français
   static String getDifficultyLabel(String difficulty) {
     switch (difficulty.toLowerCase()) {
       case 'easy':
