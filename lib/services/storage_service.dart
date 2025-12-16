@@ -8,7 +8,6 @@ import '../models/quiz_result.dart';
 class StorageService {
   static const String _userScoreKey = 'user_score';
   static const String _quizHistoryKey = 'quiz_history';
-  static const String _userStatsKey = 'user_stats';
 
   // Sauvegarder le score utilisateur
   Future<void> saveUserScore(UserScore score) async {
@@ -128,107 +127,14 @@ class StorageService {
     }
   }
 
-  // Sauvegarder les statistiques utilisateur
-  Future<void> saveUserStats(Map<String, dynamic> stats) async {
-    try {
-      debugPrint('💾 StorageService: Sauvegarde des stats utilisateur...');
-      final prefs = await SharedPreferences.getInstance();
-      final jsonData = jsonEncode(stats);
-      await prefs.setString(_userStatsKey, jsonData);
-      debugPrint('✅ StorageService: Stats sauvegardées');
-    } catch (e) {
-      debugPrint('❌ StorageService: Erreur lors de la sauvegarde des stats: $e');
-      throw Exception('Error saving user stats: $e');
-    }
-  }
-
-  // Récupérer les statistiques utilisateur
-  Future<Map<String, dynamic>?> getUserStats() async {
-    try {
-      debugPrint('📥 StorageService: Récupération des stats utilisateur...');
-      final prefs = await SharedPreferences.getInstance();
-      final statsJson = prefs.getString(_userStatsKey);
-      
-      if (statsJson != null) {
-        debugPrint('✅ StorageService: Stats trouvées');
-        return jsonDecode(statsJson) as Map<String, dynamic>;
-      } else {
-        debugPrint('ℹ️ StorageService: Aucune stat trouvée');
-        return null;
-      }
-    } catch (e) {
-      debugPrint('❌ StorageService: Erreur lors de la récupération des stats: $e');
-      return null;
-    }
-  }
-
   // Réinitialiser toutes les données
   Future<void> clearAllData() async {
     debugPrint('🗑️ StorageService: Suppression de toutes les données...');
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userScoreKey);
     await prefs.remove(_quizHistoryKey);
-    await prefs.remove(_userStatsKey);
     debugPrint('✅ StorageService: Toutes les données supprimées');
   }
 
-  // Méthode de test pour vérifier que le stockage fonctionne
-  Future<bool> testStorage() async {
-    try {
-      debugPrint('🧪 StorageService: Test du stockage...');
-      final prefs = await SharedPreferences.getInstance();
-      
-      // Test d'écriture
-      final testKey = 'test_key';
-      final testValue = 'test_value_${DateTime.now().millisecondsSinceEpoch}';
-      final writeSuccess = await prefs.setString(testKey, testValue);
-      
-      if (!writeSuccess) {
-        debugPrint('❌ StorageService: Échec de l\'écriture de test');
-        return false;
-      }
-      
-      // Test de lecture
-      final readValue = prefs.getString(testKey);
-      if (readValue != testValue) {
-        debugPrint('❌ StorageService: Échec de la lecture de test');
-        return false;
-      }
-      
-      // Nettoyer
-      await prefs.remove(testKey);
-      debugPrint('✅ StorageService: Test du stockage réussi');
-      return true;
-    } catch (e) {
-      debugPrint('❌ StorageService: Erreur lors du test: $e');
-      return false;
-    }
-  }
-
-  // Méthode pour déboguer le contenu de SharedPreferences
-  Future<void> debugStorage() async {
-    try {
-      debugPrint('🔍 StorageService: Inspection du stockage...');
-      final prefs = await SharedPreferences.getInstance();
-      final allKeys = prefs.getKeys();
-      
-      debugPrint('   Nombre total de clés: ${allKeys.length}');
-      for (final key in allKeys) {
-        final value = prefs.get(key);
-        if (value is String) {
-          final preview = value.length > 100 ? '${value.substring(0, 100)}...' : value;
-          debugPrint('   - $key: $preview');
-        } else {
-          debugPrint('   - $key: $value');
-        }
-      }
-      
-      // Vérifier spécifiquement nos clés
-      debugPrint('   Clé user_score existe: ${allKeys.contains(_userScoreKey)}');
-      debugPrint('   Clé quiz_history existe: ${allKeys.contains(_quizHistoryKey)}');
-    } catch (e) {
-      debugPrint('❌ StorageService: Erreur lors de l\'inspection: $e');
-    }
-  }
 }
 

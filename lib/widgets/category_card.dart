@@ -5,12 +5,14 @@ class CategoryCard extends StatelessWidget {
   final String categoryName;
   final VoidCallback onTap;
   final String? icon;
+  final int? questionCount;
 
   const CategoryCard({
     super.key,
     required this.categoryName,
     required this.onTap,
     this.icon,
+    this.questionCount,
   });
 
   @override
@@ -34,9 +36,24 @@ class CategoryCard extends StatelessWidget {
                   ),
                 ),
               Expanded(
-                child: Text(
-                  categoryName,
-                  style: Theme.of(context).textTheme.titleMedium,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      categoryName,
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    if (questionCount != null && questionCount! > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '$questionCount question${questionCount! > 1 ? 's' : ''}',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Icon(

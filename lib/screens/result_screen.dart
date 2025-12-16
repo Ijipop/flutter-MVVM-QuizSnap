@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/quiz_provider.dart';
-import '../providers/user_provider.dart';
 import '../widgets/score_display.dart';
 import '../utils/helpers.dart';
 import 'home_screen.dart';
@@ -15,7 +14,8 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  bool _hasSavedResult = false;
+  // La sauvegarde est maintenant faite dans quiz_screen.dart avant la navigation
+  // Plus besoin de sauvegarder ici pour éviter les boucles infinies
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +31,6 @@ class _ResultScreenState extends State<ResultScreen> {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }
-
-          // Sauvegarder automatiquement le résultat dès qu'il est disponible
-          if (!_hasSavedResult) {
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
-              final userProvider = context.read<UserProvider>();
-              await userProvider.updateScore(result);
-              if (mounted) {
-                setState(() {
-                  _hasSavedResult = true;
-                });
-              }
-            });
           }
 
           final percentage = result.percentage;
@@ -135,14 +122,9 @@ class _ResultScreenState extends State<ResultScreen> {
 
                 // Boutons d'action
                 ElevatedButton(
-                  onPressed: () async {
-                    // S'assurer que le résultat est sauvegardé (au cas où la sauvegarde automatique n'a pas fonctionné)
-                    if (!_hasSavedResult) {
-                      final userProvider = context.read<UserProvider>();
-                      await userProvider.updateScore(result);
-                    }
-
+                  onPressed: () {
                     // Retourner à l'accueil
+                    // La sauvegarde a déjà été faite dans quiz_screen.dart
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

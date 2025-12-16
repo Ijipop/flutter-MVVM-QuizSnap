@@ -11,6 +11,10 @@ class UserProvider with ChangeNotifier {
   List<QuizResult> _quizHistory = [];
   bool _isLoading = false;
   bool _isInitialized = false;
+  // Set pour tracker les résultats déjà sauvegardés (évite les doublons)
+  final Set<String> _savedResultIds = {};
+  // Flag pour éviter les appels simultanés à updateScore
+  bool _isUpdatingScore = false;
 
   // Constructeur qui charge automatiquement les données au démarrage
   UserProvider() {
@@ -21,10 +25,8 @@ class UserProvider with ChangeNotifier {
   // Initialiser et charger les données
   Future<void> _initialize() async {
     if (!_isInitialized) {
-      debugPrint('🔄 UserProvider: Initialisation en cours...');
       await loadUserData();
       _isInitialized = true;
-      debugPrint('✅ UserProvider: Initialisation terminée');
     }
   }
 
@@ -39,23 +41,10 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      debugPrint('📥 UserProvider: Chargement des données...');
-      
-      // Déboguer le stockage avant de charger
-      await _storageService.debugStorage();
-      
       _userScore = await _storageService.getUserScore();
       _quizHistory = await _storageService.getQuizHistory();
-      
-      debugPrint('📊 UserProvider: Données chargées - Quiz: ${_userScore?.totalQuizzes ?? 0}, Historique: ${_quizHistory.length}');
-      
-      if (_userScore != null) {
-        debugPrint('✅ UserProvider: Score trouvé - Total: ${_userScore!.totalQuizzes} quiz, ${_userScore!.totalCorrectAnswers}/${_userScore!.totalQuestions} réponses');
-      } else {
-        debugPrint('ℹ️ UserProvider: Aucun score sauvegardé');
-      }
     } catch (e) {
-      debugPrint('❌ UserProvider: Erreur lors du chargement: $e');
+      debugPrint('UserProvider: Erreur lors du chargement: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -64,13 +53,54 @@ class UserProvider with ChangeNotifier {
 
   // Mettre à jour le score après un quiz
   Future<void> updateScore(QuizResult result) async {
+    // Créer un identifiant unique pour ce résultat (basé sur catégorie + score + timestamp arrondi à la seconde)
+    // Arrondir le timestamp à la seconde pour éviter les IDs différents pour le même quiz
+    final timestampSeconds = (result.completedAt.millisecondsSinceEpoch / 1000).floor();
+    final resultId = '${timestampSeconds}_${result.category}_${result.correctAnswers}_${result.totalQuestions}';
+    
+    // Vérifier si on est déjà en train de sauvegarder
+    if (_isUpdatingScore) {
+      return;
+    }
+    
+    // Vérifier si ce résultat a déjà été sauvegardé
+    if (_savedResultIds.contains(resultId)) {
+      return;
+    }
+    
+    // Vérifier aussi dans l'historique si un résultat similaire existe déjà (même catégorie, même score, même nombre de questions)
+    // Recharger l'historique d'abord pour avoir les données à jour
     try {
-      debugPrint('💾 UserProvider: Sauvegarde du résultat du quiz...');
-      debugPrint('   Catégorie: ${result.category}, Score: ${result.correctAnswers}/${result.totalQuestions}');
+      final currentHistory = await _storageService.getQuizHistory();
+      final existingResult = currentHistory.firstWhere(
+        (r) => r.category == result.category &&
+               r.correctAnswers == result.correctAnswers &&
+               r.totalQuestions == result.totalQuestions &&
+               r.completedAt.difference(result.completedAt).inSeconds.abs() < 10, // Dans les 10 secondes
+        orElse: () => QuizResult(
+          totalQuestions: 0,
+          correctAnswers: 0,
+          score: 0,
+          category: '',
+          completedAt: DateTime.now(),
+        ),
+      );
+      
+      if (existingResult.totalQuestions > 0) {
+        _savedResultIds.add(resultId); // Marquer comme sauvegardé pour éviter les futurs appels
+        return;
+      }
+    } catch (e) {
+      // Continuer même en cas d'erreur
+    }
+    
+    _isUpdatingScore = true;
+    try {
+      // Marquer comme sauvegardé AVANT la sauvegarde pour éviter les appels simultanés
+      _savedResultIds.add(resultId);
       
       // Sauvegarder le résultat immédiatement
       await _storageService.saveQuizResult(result);
-      debugPrint('✅ UserProvider: Résultat sauvegardé');
 
       // Mettre à jour le score total
       final currentTotalQuizzes = _userScore?.totalQuizzes ?? 0;
@@ -88,31 +118,29 @@ class UserProvider with ChangeNotifier {
         },
       );
 
-      debugPrint('💾 UserProvider: Sauvegarde du score total...');
-      debugPrint('   Nouveau total: ${_userScore!.totalQuizzes} quiz, ${_userScore!.totalCorrectAnswers}/${_userScore!.totalQuestions} réponses');
-      
       // Sauvegarder le score mis à jour immédiatement
       await _storageService.saveUserScore(_userScore!);
-      debugPrint('✅ UserProvider: Score total sauvegardé');
       
-      // Vérifier que la sauvegarde a bien fonctionné
-      final verification = await _storageService.getUserScore();
-      if (verification != null) {
-        debugPrint('✅ UserProvider: Vérification - Score sauvegardé: ${verification.totalQuizzes} quiz');
-      } else {
-        debugPrint('⚠️ UserProvider: Vérification - Score non trouvé après sauvegarde!');
+      // Recharger l'historique sans notifier (pour éviter les boucles)
+      _isLoading = true;
+      try {
+        _quizHistory = await _storageService.getQuizHistory();
+      } catch (e) {
+        debugPrint('UserProvider: Erreur lors du rechargement de l\'historique: $e');
+      } finally {
+        _isLoading = false;
       }
       
-      // Notifier les listeners pour mettre à jour l'UI
+      // Notifier les listeners une seule fois à la fin
       notifyListeners();
-      
-      // Recharger pour avoir l'historique à jour
-      await loadUserData();
-      debugPrint('✅ UserProvider: Données rechargées après mise à jour');
     } catch (e) {
-      debugPrint('❌ UserProvider: Erreur lors de la mise à jour du score: $e');
-      // En cas d'erreur, recharger quand même les données
+      debugPrint('UserProvider: Erreur lors de la mise à jour du score: $e');
+      // En cas d'erreur, retirer l'ID du Set pour permettre une nouvelle tentative
+      _savedResultIds.remove(resultId);
+      // Recharger les données normalement
       await loadUserData();
+    } finally {
+      _isUpdatingScore = false;
     }
   }
 

@@ -193,12 +193,6 @@ class AppTheme {
       scaffoldBackgroundColor: backgroundColor,
     );
   }
-
-  // Thème sombre - Style Gaming (identique au light car Gaming est déjà sombre)
-  static ThemeData get darkTheme {
-    // Le thème Gaming est déjà sombre, donc on retourne le même
-    return lightTheme;
-  }
 }
 
 // Couleurs utilitaires pour l'application
@@ -207,7 +201,6 @@ class AppColors {
   static const secondary = Color(AppConstants.secondaryColorValue);
   static const accent = Color(AppConstants.accentColorValue);
   static const success = Color(AppConstants.successColorValue);
-  static const warning = Color(AppConstants.warningColorValue);
   static const error = Color(AppConstants.errorColorValue);
 }
 

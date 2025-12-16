@@ -1,4 +1,4 @@
-// Modèle amélioré pour une question de quiz
+
 enum QuestionType {
   multipleChoice, // Choix multiples
   trueFalse,      // Vrai ou Faux
@@ -6,15 +6,17 @@ enum QuestionType {
   image,          // Question avec image
 }
 
+
+// Modèle pour une question de quiz
 class QuestionModel {
   final String id;
   final String category;
   final String question;
   final List<String> options;
-  final int correctIndex; // Index de la bonne réponse dans options
-  final String correctAnswer; // Pour compatibilité avec l'ancien code
+  final int correctIndex; 
+  final String correctAnswer; 
   final String explanation;
-  final String difficulty; // easy, medium, hard
+  final String difficulty; 
   final String? imageUrl;
   final QuestionType type;
 

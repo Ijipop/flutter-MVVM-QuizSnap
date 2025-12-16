@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
-import '../models/question.dart';
+import '../models/question_model.dart';
 import '../models/quiz_result.dart';
 import '../models/category.dart' as models;
+import '../models/game_mode.dart';
 import '../services/local_data_service.dart';
 import '../services/quiz_service.dart';
 
@@ -9,7 +10,7 @@ import '../services/quiz_service.dart';
 class QuizProvider with ChangeNotifier {
   final QuizService _quizService = QuizService();
 
-  List<Question> _questions = [];
+  List<QuestionModel> _questions = [];
   List<models.Category> _categories = [];
   Map<int, String> _userAnswers = {};
   int _currentQuestionIndex = 0;
@@ -17,9 +18,12 @@ class QuizProvider with ChangeNotifier {
   bool _isLoadingCategories = false;
   String? _error;
   QuizResult? _result;
+  GameMode? _gameMode;
+  int _lives = 5; // Vies pour le mode survie
+  bool _isFinishing = false; // Flag pour éviter les appels multiples à finishQuiz
 
   // Getters
-  List<Question> get questions => _questions;
+  List<QuestionModel> get questions => _questions;
   List<models.Category> get categories => _categories;
   Map<int, String> get userAnswers => _userAnswers;
   int get currentQuestionIndex => _currentQuestionIndex;
@@ -27,18 +31,27 @@ class QuizProvider with ChangeNotifier {
   bool get isLoadingCategories => _isLoadingCategories;
   String? get error => _error;
   QuizResult? get result => _result;
-  Question? get currentQuestion =>
+  QuestionModel? get currentQuestion =>
       _currentQuestionIndex < _questions.length
           ? _questions[_currentQuestionIndex]
           : null;
-  bool get isQuizComplete => _currentQuestionIndex >= _questions.length;
+  bool get isQuizComplete {
+    // En mode survie, le quiz est terminé si on n'a plus de vies
+    if (_gameMode == GameMode.survival && _lives <= 0) {
+      return true;
+    }
+    // Sinon, terminé quand toutes les questions sont répondues
+    return _currentQuestionIndex >= _questions.length;
+  }
+  GameMode? get gameMode => _gameMode;
+  int get lives => _lives;
 
   // Charger les questions depuis les JSON locaux
   Future<void> loadQuestions({
     int amount = 10,
     int? category,
     String? difficulty,
-    String? language,
+    GameMode? gameMode,
   }) async {
     _isLoading = true;
     _error = null;
@@ -50,29 +63,21 @@ class QuizProvider with ChangeNotifier {
       if (category != null) {
         // Mapper l'ID numérique vers le string de catégorie JSON (clé parente)
         categoryString = _mapCategoryIdToString(category);
-        debugPrint('📋 Catégorie ID $category -> "$categoryString"');
       }
 
       // Charger depuis LocalDataService
-      final questionModels = await LocalDataService.getRandomQuestions(
+      _questions = await LocalDataService.getRandomQuestions(
         count: amount,
         category: categoryString,
         difficulty: difficulty,
       );
 
-      // Convertir QuestionModel vers Question pour compatibilité
-      _questions = questionModels.map((qm) => Question(
-        id: qm.id,
-        question: qm.question,
-        answers: qm.options,
-        correctAnswer: qm.correctAnswer,
-        category: qm.category,
-        difficulty: qm.difficulty,
-      )).toList();
-
       _currentQuestionIndex = 0;
       _userAnswers = {};
       _result = null;
+      _gameMode = gameMode;
+      // Initialiser les vies pour le mode survie
+      _lives = (gameMode == GameMode.survival) ? 5 : 5;
 
       if (_questions.isEmpty) {
         _error = 'Aucune question disponible pour cette catégorie';
@@ -95,6 +100,15 @@ class QuizProvider with ChangeNotifier {
   // Répondre à une question
   void answerQuestion(String answer) {
     _userAnswers[_currentQuestionIndex] = answer;
+    
+    // En mode survie, décrémenter les vies si la réponse est incorrecte
+    if (_gameMode == GameMode.survival) {
+      final currentQuestion = _questions[_currentQuestionIndex];
+      if (!currentQuestion.isCorrect(answer)) {
+        _lives--;
+      }
+    }
+    
     notifyListeners();
   }
 
@@ -116,6 +130,12 @@ class QuizProvider with ChangeNotifier {
 
   // Terminer le quiz et calculer le résultat
   void finishQuiz(String category) {
+    // Éviter les appels multiples
+    if (_isFinishing || _result != null) {
+      return;
+    }
+    
+    _isFinishing = true;
     _result = _quizService.createResult(
       questions: _questions,
       userAnswers: _userAnswers,
@@ -140,9 +160,21 @@ class QuizProvider with ChangeNotifier {
         // Convertir le string ID en hash numérique pour compatibilité
         final numericId = idString.hashCode.abs();
         
+        // Extraire le nombre de questions depuis la description
+        // Format: "X questions disponibles"
+        int questionCount = 0;
+        final description = json['description']?.toString() ?? '';
+        if (description.isNotEmpty) {
+          final match = RegExp(r'(\d+)').firstMatch(description);
+          if (match != null) {
+            questionCount = int.tryParse(match.group(1) ?? '0') ?? 0;
+          }
+        }
+        
         return models.Category(
           id: numericId,
           name: json['name'] ?? '',
+          questionCount: questionCount,
         );
       }).toList();
 
@@ -153,9 +185,6 @@ class QuizProvider with ChangeNotifier {
         final numericId = idString.hashCode.abs();
         _categoryIdMapping[numericId] = idString;
       }
-
-      debugPrint('✅ ${_categories.length} catégories parentes chargées');
-      debugPrint('   Mapping: $_categoryIdMapping');
 
       if (_categories.isEmpty) {
         _error = 'Aucune catégorie disponible';
@@ -179,6 +208,9 @@ class QuizProvider with ChangeNotifier {
     _currentQuestionIndex = 0;
     _result = null;
     _error = null;
+    _gameMode = null;
+    _lives = 5;
+    _isFinishing = false;
     notifyListeners();
   }
 }

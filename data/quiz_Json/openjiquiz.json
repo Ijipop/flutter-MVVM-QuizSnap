@@ -1,0 +1,373 @@
+{
+    "rédacteur": "Luna",
+    "thème": "Musique québécoise (Artistes et chansons emblématiques)",
+    "quizz": {
+      "débutant": [
+        {
+          "id": 1,
+          "question": "Quel chanteur est surnommé le « poète national » du Québec ?",
+          "propositions": [
+            "Gilles Vigneault",
+            "Jean Leloup",
+            "Robert Charlebois",
+            "Paul Piché"
+          ],
+          "réponse": "Gilles Vigneault",
+          "anecdote": "Gilles Vigneault est notamment connu pour la chanson emblématique « Gens du pays »."
+        },
+        {
+          "id": 2,
+          "question": "Quel groupe a popularisé la chanson « L’Amérique pleure » ?",
+          "propositions": [
+            "Harmonium",
+            "Les Cowboys Fringants",
+            "Beau Dommage",
+            "Kaïn"
+          ],
+          "réponse": "Les Cowboys Fringants",
+          "anecdote": "Cette chanson est devenue un véritable hymne social au Québec."
+        },
+        {
+          "id": 3,
+          "question": "Quel artiste est derrière la chanson « Je joue de la guitare » ?",
+          "propositions": [
+            "Daniel Bélanger",
+            "Jean Leloup",
+            "Dumas",
+            "Richard Desjardins"
+          ],
+          "réponse": "Jean Leloup",
+          "anecdote": "Jean Leloup est reconnu pour son style unique et imprévisible."
+        },
+        {
+          "id": 4,
+          "question": "Quel groupe québécois est associé à la chanson « La complainte du phoque en Alaska » ?",
+          "propositions": [
+            "Beau Dommage",
+            "Harmonium",
+            "Les Colocs",
+            "Offenbach"
+          ],
+          "réponse": "Beau Dommage",
+          "anecdote": "Cette chanson est l’un des grands classiques de la musique francophone canadienne."
+        },
+        {
+          "id": 5,
+          "question": "Quel chanteur est connu pour la chanson « L’escalier » ?",
+          "propositions": [
+            "Paul Piché",
+            "Luc De Larochellière",
+            "Richard Séguin",
+            "Éric Lapointe"
+          ],
+          "réponse": "Paul Piché",
+          "anecdote": "Paul Piché est un auteur-compositeur engagé depuis les années 1970."
+        },
+        {
+          "id": 6,
+          "question": "Quel groupe est considéré comme un pilier du rock québécois des années 1970 ?",
+          "propositions": [
+            "Harmonium",
+            "Offenbach",
+            "Kaïn",
+            "Les Respectables"
+          ],
+          "réponse": "Offenbach",
+          "anecdote": "Offenbach a marqué toute une génération avec son rock cru et franc."
+        },
+        {
+          "id": 7,
+          "question": "Quelle artiste a remporté l’Eurovision en 1988 avant de devenir une icône mondiale ?",
+          "propositions": [
+            "Isabelle Boulay",
+            "Céline Dion",
+            "Ginette Reno",
+            "Ariane Moffatt"
+          ],
+          "réponse": "Céline Dion",
+          "anecdote": "Céline Dion a remporté l’Eurovision en représentant la Suisse."
+        },
+        {
+          "id": 8,
+          "question": "Quel groupe chantait « Passe-moé la puck » ?",
+          "propositions": [
+            "Les Colocs",
+            "Loco Locass",
+            "Groovy Aardvark",
+            "Vilain Pingouin"
+          ],
+          "réponse": "Les Colocs",
+          "anecdote": "Les Colocs étaient reconnus pour leurs textes sociaux et rassembleurs."
+        },
+        {
+          "id": 9,
+          "question": "Quel artiste est associé à la chanson « Dis-moi dis-moi dis-moi » ?",
+          "propositions": [
+            "Daniel Bélanger",
+            "Dumas",
+            "Michel Rivard",
+            "Pierre Lapointe"
+          ],
+          "réponse": "Daniel Bélanger",
+          "anecdote": "Daniel Bélanger est reconnu pour sa poésie et ses ambiances sonores."
+        },
+        {
+          "id": 10,
+          "question": "Quel groupe est derrière la chanson « Maria » ?",
+          "propositions": [
+            "Kaïn",
+            "Les Cowboys Fringants",
+            "Harmonium",
+            "Beau Dommage"
+          ],
+          "réponse": "Kaïn",
+          "anecdote": "Kaïn mélange rock et folk avec une forte influence québécoise."
+        }
+      ],
+      "confirmé": [
+        {
+          "id": 11,
+          "question": "Quel groupe progressif québécois a marqué les années 1970 avec l’album « Si on avait besoin d’une cinquième saison » ?",
+          "propositions": [
+            "Offenbach",
+            "Harmonium",
+            "Maneige",
+            "Beau Dommage"
+          ],
+          "réponse": "Harmonium",
+          "anecdote": "Harmonium est souvent cité comme un des plus grands groupes québécois de tous les temps."
+        },
+        {
+          "id": 12,
+          "question": "Quel rappeur québécois fait partie du groupe Loco Locass ?",
+          "propositions": [
+            "Koriass",
+            "Manu Militari",
+            "Biz",
+            "FouKi"
+          ],
+          "réponse": "Biz",
+          "anecdote": "Biz est reconnu pour son engagement politique et social."
+        },
+        {
+          "id": 13,
+          "question": "Quel artiste a popularisé la chanson « Tu m’aimes-tu » ?",
+          "propositions": [
+            "Richard Desjardins",
+            "Paul Piché",
+            "Éric Lapointe",
+            "Jean-Pierre Ferland"
+          ],
+          "réponse": "Richard Desjardins",
+          "anecdote": "Cette chanson est devenue un classique incontournable."
+        },
+        {
+          "id": 14,
+          "question": "Quel groupe est connu pour la chanson « Le shack à Hector » ?",
+          "propositions": [
+            "Les Cowboys Fringants",
+            "Offenbach",
+            "Les Colocs",
+            "Vilain Pingouin"
+          ],
+          "réponse": "Les Cowboys Fringants",
+          "anecdote": "Le groupe est originaire de Repentigny."
+        },
+        {
+          "id": 15,
+          "question": "Quel artiste est derrière l’album « La forêt des mal-aimés » ?",
+          "propositions": [
+            "Pierre Lapointe",
+            "Ariane Moffatt",
+            "Dumas",
+            "Daniel Bélanger"
+          ],
+          "réponse": "Pierre Lapointe",
+          "anecdote": "Cet album a marqué la chanson québécoise moderne."
+        },
+        {
+          "id": 16,
+          "question": "Quel groupe a chanté « Le répondeur » ?",
+          "propositions": [
+            "Les Colocs",
+            "Les Cowboys Fringants",
+            "Kaïn",
+            "Loco Locass"
+          ],
+          "réponse": "Les Cowboys Fringants",
+          "anecdote": "Le groupe est reconnu pour ses refrains accrocheurs."
+        },
+        {
+          "id": 17,
+          "question": "Quelle chanteuse est surnommée « la grande dame de la chanson québécoise » ?",
+          "propositions": [
+            "Isabelle Boulay",
+            "Céline Dion",
+            "Ginette Reno",
+            "Marie-Mai"
+          ],
+          "réponse": "Ginette Reno",
+          "anecdote": "Ginette Reno possède une carrière impressionnante de plusieurs décennies."
+        },
+        {
+          "id": 18,
+          "question": "Quel groupe mélange rock et influences irlandaises ?",
+          "propositions": [
+            "Kaïn",
+            "Les Respectables",
+            "Les Cowboys Fringants",
+            "Harmonium"
+          ],
+          "réponse": "Les Cowboys Fringants",
+          "anecdote": "Le violon est souvent présent dans leurs compositions."
+        },
+        {
+          "id": 19,
+          "question": "Quel artiste est connu pour la chanson « Le but » ?",
+          "propositions": [
+            "Loco Locass",
+            "Koriass",
+            "Manu Militari",
+            "Alaclair Ensemble"
+          ],
+          "réponse": "Loco Locass",
+          "anecdote": "La chanson est devenue un classique associé au hockey."
+        },
+        {
+          "id": 20,
+          "question": "Quel groupe est associé au rock alternatif québécois des années 1990 ?",
+          "propositions": [
+            "Groovy Aardvark",
+            "Harmonium",
+            "Beau Dommage",
+            "Kaïn"
+          ],
+          "réponse": "Groovy Aardvark",
+          "anecdote": "Le groupe chantait principalement en anglais."
+        }
+      ],
+      "expert": [
+        {
+          "id": 21,
+          "question": "Quel artiste a fondé le groupe Offenbach ?",
+          "propositions": [
+            "Gerry Boulet",
+            "Plume Latraverse",
+            "Robert Charlebois",
+            "Michel Pagliaro"
+          ],
+          "réponse": "Gerry Boulet",
+          "anecdote": "Gerry Boulet est une figure marquante du rock québécois."
+        },
+        {
+          "id": 22,
+          "question": "Quel auteur-compositeur est connu pour ses textes très engagés écologiquement ?",
+          "propositions": [
+            "Paul Piché",
+            "Richard Desjardins",
+            "Daniel Bélanger",
+            "Jean Leloup"
+          ],
+          "réponse": "Richard Desjardins",
+          "anecdote": "Il est aussi un documentariste reconnu."
+        },
+        {
+          "id": 23,
+          "question": "Quel groupe québécois chantait « Tout le monde en même temps » ?",
+          "propositions": [
+            "Harmonium",
+            "Les Colocs",
+            "Vilain Pingouin",
+            "Offenbach"
+          ],
+          "réponse": "Les Colocs",
+          "anecdote": "Cette chanson prônait l’unité et la solidarité."
+        },
+        {
+          "id": 24,
+          "question": "Quel artiste est derrière la chanson « Les étoiles filantes » ?",
+          "propositions": [
+            "Daniel Bélanger",
+            "Les Cowboys Fringants",
+            "Pierre Lapointe",
+            "Ariane Moffatt"
+          ],
+          "réponse": "Les Cowboys Fringants",
+          "anecdote": "La chanson évoque le passage du temps et la nostalgie."
+        },
+        {
+          "id": 25,
+          "question": "Quel chanteur est aussi connu sous le nom de scène Pagliaro ?",
+          "propositions": [
+            "Michel Pagliaro",
+            "Gerry Boulet",
+            "Luc De Larochellière",
+            "Robert Charlebois"
+          ],
+          "réponse": "Michel Pagliaro",
+          "anecdote": "Pagliaro a connu du succès en français et en anglais."
+        },
+        {
+          "id": 26,
+          "question": "Quel groupe est à l’origine de la chanson « Sous-sol » ?",
+          "propositions": [
+            "Kaïn",
+            "Les Colocs",
+            "Loco Locass",
+            "Les Cowboys Fringants"
+          ],
+          "réponse": "Les Colocs",
+          "anecdote": "La chanson aborde les réalités sociales urbaines."
+        },
+        {
+          "id": 27,
+          "question": "Quel artiste a lancé l’album « Le cours des jours » en 2003 ?",
+          "propositions": [
+            "Daniel Bélanger",
+            "Dumas",
+            "Pierre Lapointe",
+            "Ariane Moffatt"
+          ],
+          "réponse": "Dumas",
+          "anecdote": "Dumas est aussi réalisateur et arrangeur."
+        },
+        {
+          "id": 28,
+          "question": "Quel groupe québécois est connu pour son humour absurde et irrévérencieux ?",
+          "propositions": [
+            "Les Trois Accords",
+            "Harmonium",
+            "Offenbach",
+            "Vilain Pingouin"
+          ],
+          "réponse": "Les Trois Accords",
+          "anecdote": "Leur style est unique dans le paysage musical québécois."
+        },
+        {
+          "id": 29,
+          "question": "Quel artiste est reconnu pour la chanson « M’appelle pas Marie » ?",
+          "propositions": [
+            "Ariane Moffatt",
+            "Véronique Sanson",
+            "Marie-Mai",
+            "Cœur de pirate"
+          ],
+          "réponse": "Cœur de pirate",
+          "anecdote": "Cœur de pirate s’est aussi illustrée à l’international."
+        },
+        {
+          "id": 30,
+          "question": "Quel musicien est à l’origine du projet musical Plume Latraverse ?",
+          "propositions": [
+            "Luc De Larochellière",
+            "Plume Latraverse",
+            "Robert Charlebois",
+            "Paul Piché"
+          ],
+          "réponse": "Plume Latraverse",
+          "anecdote": "Plume est reconnu pour son humour et son irrévérence."
+        }
+      ]
+    }
+  }
+  

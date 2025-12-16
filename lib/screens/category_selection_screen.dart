@@ -26,6 +26,8 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   }
 
   void _startQuiz(int categoryId, String categoryName) {
+    // Debug : vérifier la difficulté avant de passer à l'écran suivant
+    
     // Rediriger vers la sélection du mode de jeu avec la difficulté sélectionnée
     Navigator.push(
       context,
@@ -49,8 +51,29 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
         builder: (context, quizProvider, child) {
           // Afficher un loader pendant le chargement
           if (quizProvider.isLoadingCategories) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Récupération des 8000 questions...',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Soyez patient, cela peut prendre quelques instants.',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             );
           }
 
@@ -162,6 +185,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                           final category = quizProvider.categories[index];
                           return CategoryCard(
                             categoryName: category.name,
+                            questionCount: category.questionCount,
                             onTap: () => _startQuiz(category.id, category.name),
                           );
                         },

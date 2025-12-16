@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../models/quiz_session_model.dart';
+import '../models/game_mode.dart';
 import '../providers/quiz_provider.dart';
 import 'quiz_screen.dart';
 
@@ -41,10 +41,10 @@ class GameModeSelectionScreen extends StatelessWidget {
             // Mode Rapide
             _GameModeCard(
               title: 'Mode Rapide',
-              description: '10 questions, 15 secondes chacune',
+              description: '10 questions',
               icon: Icons.flash_on,
               color: Colors.orange,
-              onTap: () => _startGame(context, GameMode.quick, 10, 15),
+              onTap: () => _startGame(context, GameMode.quick, 10),
             ),
             
             const SizedBox(height: 16),
@@ -55,7 +55,7 @@ class GameModeSelectionScreen extends StatelessWidget {
               description: '50 questions, testez votre endurance',
               icon: Icons.directions_run,
               color: Colors.purple,
-              onTap: () => _startGame(context, GameMode.marathon, 50, 30),
+              onTap: () => _startGame(context, GameMode.marathon, 50),
             ),
             
             const SizedBox(height: 16),
@@ -66,7 +66,7 @@ class GameModeSelectionScreen extends StatelessWidget {
               description: 'Jusqu\'à la première erreur, 5 vies',
               icon: Icons.favorite,
               color: Colors.red,
-              onTap: () => _startGame(context, GameMode.survival, 100, 20),
+              onTap: () => _startGame(context, GameMode.survival, 100),
             ),
             
             const SizedBox(height: 16),
@@ -77,19 +77,9 @@ class GameModeSelectionScreen extends StatelessWidget {
               description: 'Un nouveau défi chaque jour',
               icon: Icons.calendar_today,
               color: Colors.blue,
-              onTap: () => _startGame(context, GameMode.daily, 15, 20),
+              onTap: () => _startGame(context, GameMode.daily, 15),
             ),
             
-            const SizedBox(height: 16),
-            
-            // Mode Personnalisé
-            _GameModeCard(
-              title: 'Mode Personnalisé',
-              description: 'Choisissez vos paramètres',
-              icon: Icons.settings,
-              color: Colors.grey,
-              onTap: () => _showCustomModeDialog(context),
-            ),
           ],
         ),
       ),
@@ -100,7 +90,6 @@ class GameModeSelectionScreen extends StatelessWidget {
     BuildContext context,
     GameMode mode,
     int questionCount,
-    int timePerQuestion,
   ) async {
     final quizProvider = context.read<QuizProvider>();
     
@@ -109,6 +98,7 @@ class GameModeSelectionScreen extends StatelessWidget {
       amount: questionCount,
       category: categoryId,
       difficulty: selectedDifficulty, // Passer la difficulté sélectionnée
+      gameMode: mode, // Passer le mode de jeu
     );
 
     if (quizProvider.error != null && quizProvider.questions.isEmpty) {
@@ -122,7 +112,6 @@ class GameModeSelectionScreen extends StatelessWidget {
       }
       return;
     }
-
     if (context.mounted) {
       Navigator.push(
         context,
@@ -130,64 +119,10 @@ class GameModeSelectionScreen extends StatelessWidget {
           builder: (context) => QuizScreen(
             categoryName: categoryName,
             gameMode: mode,
-            timePerQuestion: timePerQuestion,
           ),
         ),
       );
     }
-  }
-
-  void _showCustomModeDialog(BuildContext context) {
-    int questionCount = 10;
-    int timePerQuestion = 20;
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Mode Personnalisé'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('Nombre de questions: $questionCount'),
-            Slider(
-              value: questionCount.toDouble(),
-              min: 5,
-              max: 50,
-              divisions: 9,
-              label: questionCount.toString(),
-              onChanged: (value) {
-                questionCount = value.toInt();
-              },
-            ),
-            const SizedBox(height: 16),
-            Text('Temps par question: $timePerQuestion secondes'),
-            Slider(
-              value: timePerQuestion.toDouble(),
-              min: 5,
-              max: 60,
-              divisions: 11,
-              label: '$timePerQuestion s',
-              onChanged: (value) {
-                timePerQuestion = value.toInt();
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _startGame(context, GameMode.custom, questionCount, timePerQuestion);
-            },
-            child: const Text('Commencer'),
-          ),
-        ],
-      ),
-    );
   }
 }
 

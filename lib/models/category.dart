@@ -2,16 +2,19 @@
 class Category {
   final int id;
   final String name;
+  final int questionCount;
 
   Category({
     required this.id,
     required this.name,
+    this.questionCount = 0,
   });
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
+      questionCount: json['questionCount'] ?? 0,
     );
   }
 
@@ -19,6 +22,7 @@ class Category {
     return {
       'id': id,
       'name': name,
+      'questionCount': questionCount,
     };
   }
 }

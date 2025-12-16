@@ -41,9 +41,6 @@ dependencies:
   # Local storage
   shared_preferences: ^2.2.2
   
-  # Timer for quiz
-  flutter_countdown_timer: ^4.1.0
-  
   # Charts for statistics
   fl_chart: ^0.66.0
   

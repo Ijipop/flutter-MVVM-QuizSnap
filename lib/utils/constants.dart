@@ -14,11 +14,6 @@ class AppConstants {
   static const double defaultPadding = 16.0;
   static const double defaultBorderRadius = 12.0;
   
-  // Configuration Quiz
-  static const int defaultQuestionCount = 10;
-  static const int defaultTimePerQuestion = 30; // secondes
-  static const String defaultLanguage = 'fr'; // Français par défaut
-  
   // Difficultés supportées
   // - 'easy' → Facile
   // - 'medium' → Moyen  

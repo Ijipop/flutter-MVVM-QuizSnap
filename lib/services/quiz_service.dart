@@ -1,10 +1,10 @@
-import '../models/question.dart';
+import '../models/question_model.dart';
 import '../models/quiz_result.dart';
 
 // Service pour la logique métier du quiz
 class QuizService {
   int calculateScore({
-    required List<Question> questions,
+    required List<QuestionModel> questions,
     required Map<int, String> userAnswers,
   }) {
     int score = 0;
@@ -13,7 +13,7 @@ class QuizService {
       final question = questions[i];
       final userAnswer = userAnswers[i];
       
-      if (userAnswer == question.correctAnswer) {
+      if (userAnswer != null && question.isCorrect(userAnswer)) {
         score++;
       }
     }
@@ -22,7 +22,7 @@ class QuizService {
   }
 
   QuizResult createResult({
-    required List<Question> questions,
+    required List<QuestionModel> questions,
     required Map<int, String> userAnswers,
     required String category,
   }) {
@@ -40,8 +40,8 @@ class QuizService {
     );
   }
 
-  bool isAnswerCorrect(Question question, String userAnswer) {
-    return question.correctAnswer == userAnswer;
+  bool isAnswerCorrect(QuestionModel question, String userAnswer) {
+    return question.isCorrect(userAnswer);
   }
 }
 
