@@ -58,7 +58,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                   const CircularProgressIndicator(),
                   const SizedBox(height: 24),
                   Text(
-                    'Récupération des 8000 questions...',
+                    'Récupération des 4500 questions...',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),

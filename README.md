@@ -11,11 +11,11 @@ Application mobile de quiz interactive avec statistiques.
 ### À quoi sert l'application ?
 
 QuizSnap est une application de quiz minimaliste conçue pour tester 
-votre culture général
+votre culture générale
 
 ### Fonctionnalités principales
 
-- **Quiz par catégorie** : Plus de 8000 questions réparties dans 10 catégories principales
+- **Quiz par catégorie** : Plus de 4500 questions réparties dans 10 catégories principales
 - **Niveaux de difficulté** : 3 niveaux (Facile, Moyen, Difficile) à
 - **Statistiques** : 
   - Score global et moyenne globale
@@ -127,7 +127,7 @@ Consumer<QuizProvider>(
 ```dart
 // Dans un Provider (ViewModel)
 class QuizProvider with ChangeNotifier {
-  List<Question> _questions = [];
+  List<QuestionModel> _questions = [];
   
   Future<void> loadQuestions() async {
     _questions = await LocalDataService.getRandomQuestions();
@@ -320,8 +320,6 @@ HomeScreen
 |---------|---------|-------|
 | `provider` | ^6.1.1 | Gestion d'état MVVM (ViewModels) |
 | `shared_preferences` | ^2.2.2 | Stockage local persistant |
-| `fl_chart` | ^0.66.0 | Graphiques pour statistiques |
-| `confetti` | ^0.7.0 | Animations de célébration |
 
 ### Packages pour MVVM
 
