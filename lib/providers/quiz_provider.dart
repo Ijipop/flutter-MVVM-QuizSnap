@@ -75,6 +75,7 @@ class QuizProvider with ChangeNotifier {
       _currentQuestionIndex = 0;
       _userAnswers = {};
       _result = null;
+      _isFinishing = false; // Réinitialiser le flag pour permettre la création d'un nouveau résultat
       _gameMode = gameMode;
       // Initialiser les vies pour le mode survie
       _lives = (gameMode == GameMode.survival) ? 5 : 5;
