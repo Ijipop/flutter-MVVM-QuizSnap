@@ -10,15 +10,11 @@ class QuestionConverterService {
     
     try {
       final theme = fileData['thème']?.toString() ?? 'Général';
-      debugPrint('   Thème détecté: $theme');
 
       final quizz = fileData['quizz'];
       if (quizz == null || quizz is! Map<String, dynamic>) {
-        debugPrint('   ❌ "quizz" n\'est pas une Map valide (type: ${quizz.runtimeType})');
         return questions;
       }
-      
-      debugPrint('   ✅ Structure "quizz" valide avec ${quizz.length} clés: ${quizz.keys.join(", ")}');
 
       // Liste des codes de langue courants (pour détecter si c'est une langue ou un niveau)
       const languageCodes = ['fr', 'en', 'de', 'es', 'it', 'nl', 'pt', 'ru', 'ja', 'zh', 'ar'];
@@ -33,7 +29,6 @@ class QuestionConverterService {
         if (languageCodes.contains(key.toLowerCase())) {
           // Ignorer toutes les langues sauf le français
           if (key.toLowerCase() != targetLanguage) {
-            debugPrint('🌍 Langue "$key" ignorée, on ne charge que le français (fr)');
             continue;
           }
           if (keyData is Map<String, dynamic>) {
@@ -43,7 +38,6 @@ class QuestionConverterService {
               
               // Vérifier que c'est bien une liste
               if (levelData is! List) {
-                debugPrint(' Le niveau "$level" dans "$key" n\'est pas une liste (type: ${levelData.runtimeType}), ignoré');
                 continue;
               }
               
@@ -89,12 +83,10 @@ class QuestionConverterService {
               }
             }
           }
-        } else {
-          debugPrint(' La clé "$key" n\'est ni une liste ni une Map valide (type: ${keyData.runtimeType}), ignoré');
         }
       }
     } catch (e) {
-      debugPrint(' Erreur lors de la conversion du format OpenQuizzDB: $e');
+      debugPrint('❌ QuestionConverterService: Erreur lors de la conversion du format OpenQuizzDB: $e');
     }
 
     return questions;
@@ -130,7 +122,7 @@ class QuestionConverterService {
         
         _addQuestion(questionData, theme, questions);
       } catch (e) {
-        debugPrint(' Erreur lors de la conversion d\'une question: $e');
+        // Ignorer les questions invalides
       }
     }
   }
@@ -193,7 +185,6 @@ class QuestionConverterService {
       correctIndex: correctIndex,
       explanation: anecdote,
       difficulty: difficulty,
-      type: QuestionType.multipleChoice,
     ));
   }
 }

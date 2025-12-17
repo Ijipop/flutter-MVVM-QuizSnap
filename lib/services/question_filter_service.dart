@@ -14,10 +14,6 @@ class QuestionFilterService {
     try {
       var questions = List<QuestionModel>.from(allQuestions);
       
-      debugPrint('🔍 Filtrage: ${questions.length} questions disponibles');
-      debugPrint('   Catégorie recherchée: $category');
-      debugPrint('   Difficulté recherchée: "$difficulty" (type: ${difficulty.runtimeType}, isNull: ${difficulty == null}, isEmpty: ${difficulty?.isEmpty ?? true})');
-      
       // Filtrer par catégorie si spécifiée
       if (category != null && category.isNotEmpty) {
         questions = _filterByCategory(questions, category);
@@ -25,16 +21,12 @@ class QuestionFilterService {
       
       // Filtrer par difficulté si spécifiée
       if (difficulty != null && difficulty.isNotEmpty) {
-        final beforeCount = questions.length;
         questions = questions.where((q) => q.difficulty == difficulty).toList();
-        debugPrint('   Après filtrage difficulté: ${questions.length} questions ($beforeCount -> ${questions.length})');
       }
       
       // Mélanger et prendre le nombre demandé
       questions.shuffle();
-      final result = questions.take(count).toList();
-      debugPrint('✅ ${result.length} questions sélectionnées');
-      return result;
+      return questions.take(count).toList();
     } catch (e) {
       debugPrint('❌ QuestionFilterService: Erreur lors de la récupération de questions aléatoires: $e');
       return [];
@@ -47,7 +39,6 @@ class QuestionFilterService {
     String category,
   ) {
     final categoryLower = category.toLowerCase().trim();
-    final beforeCount = questions.length;
     
     // Extraire la clé de catégorie parente depuis le nom (ex: "Cinema" -> "cinema")
     String? parentKey;
@@ -85,8 +76,6 @@ class QuestionFilterService {
         // Sinon, prendre toutes les questions de cette catégorie parente
         return qParent == parentKey;
       }).toList();
-      
-      debugPrint('   Catégorie parente détectée: $parentKey');
     } else {
       // Recherche exacte ou partielle sur le thème
       questions = questions.where((q) {
@@ -100,7 +89,6 @@ class QuestionFilterService {
       }).toList();
     }
     
-    debugPrint('   Après filtrage catégorie: ${questions.length} questions ($beforeCount -> ${questions.length})');
     return questions;
   }
 }

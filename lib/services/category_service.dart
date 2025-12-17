@@ -99,8 +99,6 @@ class CategoryService {
     List<QuestionModel> questions,
   ) async {
     try {
-      debugPrint('📥 CategoryService: Génération des catégories depuis Quiz_Json...');
-      
       // Extraire les thèmes uniques et les regrouper par catégorie parente
       final themes = <String, int>{};
       final themesByParent = <String, Map<String, int>>{};
@@ -164,7 +162,6 @@ class CategoryService {
         return countB.compareTo(countA);
       });
 
-      debugPrint('✅ CategoryService: ${categories.length} catégories parentes générées');
       return categories;
     } catch (e) {
       debugPrint('❌ CategoryService: Erreur lors de la génération des catégories: $e');
